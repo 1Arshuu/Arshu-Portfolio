@@ -1,26 +1,264 @@
 @import "tailwindcss";
 
+/* ============================================================
+   DESIGN SYSTEM — "Obsidian Gold · Neon Cinema"
+   Tailwind v4 token registration via @theme.
+   ============================================================ */
+@theme {
+  /* Backgrounds */
+  --color-void: #060507;
+  --color-surface: #0d0c10;
+  --color-elevated: #141319;
+
+  /* Gold */
+  --color-gold: #d4a843;
+  --color-gold-light: #f0c866;
+
+  /* Violet (electric / neon) */
+  --color-violet: #7b61ff;
+  --color-violet-light: #a594ff;
+
+  /* Cyan accent for neon-tech moments */
+  --color-cyan: #4fd6ff;
+
+  /* Text */
+  --color-ink: #f4f3f7;
+  --color-muted: #9a98a8;
+  --color-dim: #56535f;
+
+  /* Borders */
+  --color-border-gold: rgba(212, 168, 67, 0.18);
+  --color-border-subtle: rgba(255, 255, 255, 0.07);
+
+  /* Fonts — two families only: Cormorant (serif) + Jost (sans).
+     Wired to the next/font CSS variables defined on <html>. */
+  --font-display: var(--font-cormorant), Georgia, serif;
+  --font-heading: var(--font-jost), system-ui, sans-serif;
+  --font-body: var(--font-jost), system-ui, sans-serif;
+  --font-accent: var(--font-jost), system-ui, sans-serif;
+}
+
+/* ============================================================
+   RAW CSS VARIABLES (for inline styles / shadows / glows)
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gold-glow: rgba(212, 168, 67, 0.35);
+  --violet-glow: rgba(123, 97, 255, 0.35);
+  --cyan-glow: rgba(79, 214, 255, 0.3);
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-gold: rgba(212, 168, 67, 0.2);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   BASE
+   NOTE: do NOT add an unlayered `* { padding:0 }` reset here —
+   Tailwind v4 ships utilities inside @layer, and unlayered rules
+   outrank layered ones, which would nullify every padding/margin utility.
+   Preflight already handles box-sizing and margin resets.
+   ============================================================ */
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: auto; /* Lenis owns scrolling */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-void, #060507);
+  color: var(--color-ink, #f4f3f7);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #060507;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--color-gold), var(--color-violet));
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--color-gold-light), var(--color-violet-light));
+}
+
+/* ============================================================
+   SELECTION
+   ============================================================ */
+::selection {
+  background: rgba(212, 168, 67, 0.3);
+  color: #f4f3f7;
+}
+
+/* ============================================================
+   FOCUS — accessible gold rings
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid #d4a843;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   LENIS smooth-scroll integration
+   ============================================================ */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ============================================================
+   GLASSMORPHISM
+   ============================================================ */
+/* Glassmorphism. Vertical gradient so the TOP catches light and the BOTTOM
+   stays slightly more transparent. backdrop-filter gives the frosted look. */
+.glass {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.035) 45%,
+    rgba(255, 255, 255, 0.012) 100%
+  );
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* On phones, backdrop-filter on many cards is the main scroll-jank source.
+   Drop the blur there (the translucent gradient alone still reads as glass on
+   the dark bg) so mobile stays buttery; desktop keeps the full frosted look. */
+@media (max-width: 768px) {
+  .glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+.glass-strong {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Top inner highlight line for glass panels */
+.glass-highlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18),
+    transparent 40%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ============================================================
+   NEON
+   ============================================================ */
+.neon-gold {
+  text-shadow: 0 0 24px rgba(212, 168, 67, 0.28);
+}
+.neon-violet {
+  text-shadow: 0 0 24px rgba(123, 97, 255, 0.28);
+}
+
+/* Gradient text helper */
+.text-gradient-gold {
+  background: linear-gradient(120deg, #f0c866, #d4a843 55%, #a37e2b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-gradient-neon {
+  background: linear-gradient(120deg, #f0c866, #7b61ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ============================================================
+   UTILITIES / HELPERS
+   ============================================================ */
+.text-balance {
+  text-wrap: balance;
+}
+.vertical-rl {
+  writing-mode: vertical-rl;
+}
+.perspective {
+  perspective: 1200px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Animated grid floor (used in Background) */
+.grid-floor {
+  background-image: linear-gradient(rgba(123, 97, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123, 97, 255, 0.08) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+@keyframes aurora-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(6%, -4%) scale(1.1); }
+  66% { transform: translate(-5%, 5%) scale(0.95); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.animate-aurora { animation: aurora-drift 18s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 26s linear infinite; }
+.animate-spin-slower { animation: spin-slow 60s linear infinite; }
+.animate-float-y { animation: float-y 7s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+
+/* Reduced motion: calm everything down */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

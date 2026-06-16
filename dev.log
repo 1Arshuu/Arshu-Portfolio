@@ -1,0 +1,16 @@
+
+> arsh@0.1.0 dev
+> next dev -H 0.0.0.0
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+✓ Ready in 802ms
+
+○ Compiling / ...
+ GET / 200 in 7.5s (next.js: 6.9s, application-code: 642ms)
+ GET / 200 in 168ms (next.js: 5ms, application-code: 162ms)
+ GET / 200 in 180ms (next.js: 4ms, application-code: 176ms)
+ GET / 200 in 977ms (next.js: 30ms, application-code: 947ms)
+ GET / 200 in 581ms (next.js: 27ms, application-code: 554ms)
+ GET / 200 in 674ms (next.js: 8ms, application-code: 666ms)
